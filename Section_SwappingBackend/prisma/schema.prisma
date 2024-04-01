@@ -1,0 +1,139 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  name     String
+  email    String @unique
+  password String
+}
+
+
+model Swapping {
+  id                 String     @id @default(auto()) @map("_id") @db.ObjectId
+  name               String
+  branch             String
+  Semester           Int
+  alloted            Int
+  email              String     @unique
+  lookingFor         Int[]
+  matched            Boolean    @default(false)
+  contact            String
+  remoteUserId       String?     @db.ObjectId
+  remoteUser         Swapping?  @relation("SwappingToSwapping", fields: [remoteUserId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  editLeft           Int        @default(3)
+  createdAt          DateTime   @default(now())
+  SwappingToSwapping Swapping[] @relation("SwappingToSwapping")
+}
+
+
+type Note {
+  id             String  @default(uuid()) // Unique identifier for notes
+  name           String
+  mimeType       String? @default("application/pdf")
+  isDownloadable Boolean @default(false)
+  status         String? @default("VERIFIED")
+  Notes          String
+}
+
+type PYQS {
+  id                 String  @default(uuid()) // Unique identifier for PYQS
+  name               String
+  year               String
+  type               String
+  status             String?
+  solutionUploadedBy String? @db.ObjectId
+  QuestionUploadedBy String? @db.ObjectId
+  mimeType           String?
+  Question           String?
+  solution           String?
+}
+
+model Subject {
+  id            String             @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  SUBCODE       String?
+  Credit        String?
+  description   String?
+  folderId      String?
+  notes         Note[]
+  pyqs          PYQS[]
+  semesterId    String[]           @db.ObjectId
+  semester      Semester[]         @relation(fields: [semesterId], references: [id])
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+  verfySolution VerifySolution[]
+
+}
+
+model Branch {
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  name      String     @unique
+  semesters Semester[]
+}
+
+type PYQSVerify {
+  id       String // Unique identifier for PYQS
+  name     String
+  year     String
+  type     String
+  Question String?
+}
+
+model VerifySolution {
+  id             String     @id @default(auto()) @map("_id") @db.ObjectId
+  solution       String
+  status         String     @default("REVIEW")
+  maxAttempts    Int?       @default(2)
+  upiId          String
+  pyqs           PYQSVerify
+  paymentStatus  String?    @default("PENDING")
+  rejectedReason String?
+  subjectId      String     @db.ObjectId
+  subject        Subject    @relation(fields: [subjectId], references: [id])
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+}
+
+// model Faculties{
+//   id        String    @id @default(auto()) @map("_id") @db.ObjectId
+//   name      String
+//   phone     String?
+//   email     String?
+//   description String?
+//   jobTitle  String?
+//   moreInfo  String?
+//   profileUrl String?
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+// }
+model Semester {
+  id                String             @id @default(auto()) @map("_id") @db.ObjectId
+  number            Int
+  subjectId         String[]           @db.ObjectId
+  subjects          Subject[]          @relation(fields: [subjectId], references: [id])
+  branch            Branch             @relation(fields: [branchId], references: [id],onDelete:Cascade)
+  branchId          String             @unique @db.ObjectId
+  semesterSectionId String[]           @db.ObjectId
+  semesterSections  SemesterSections[]
+
+}
+
+model SemesterSections {
+  id         String             @id @default(auto()) @map("_id") @db.ObjectId
+  section    Int
+  semesterId String             @db.ObjectId
+  semester   Semester           @relation(fields: [semesterId], references: [id])
+  createdAt  DateTime           @default(now())
+  updatedAt  DateTime           @updatedAt
+}
