@@ -1,5 +1,6 @@
-./section_swap_Frontend/node_modules
-./Section_SwappingBackend/node_modules
-./Section_SwappingBackend/.env
-./section_swap_Frontend/.env
-./Section_SwappingBackend/kiit_credentials.json
+section_swap_Frontend/node_modules
+Section_SwappingBackend/node_modules
+Section_SwappingBackend/.env
+section_swap_Frontend/.env
+Section_SwappingBackend/kiit_credentials.json
+Section_SwappingBackend/dist
