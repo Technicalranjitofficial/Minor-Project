@@ -39,19 +39,26 @@ import {
 import { AddNotesPYQSDialog } from "./AddNotesAndPYQSDialog";
 import { useAppDispatch } from "@/Redux/hooks/index";
 import { addNotesPYQS, setAssignSubjectToFaculty, setConfirmDelete } from "@/Redux/reducers/adminReducers";
-import { getNotesAndPYQS } from "@/ServerActions/admin";
+import { getNotesAndPYQS, setSectionSwappingEnabled } from "@/ServerActions/admin";
+import Link from "next/link";
 import { AddSubjects } from "./AddSubjects";
 import { DeleteConfirm } from "./DeleteConfirm";
 
 import FilterSemesters from "./FilterSemesters";
+import { MultiSelect } from "./MultiSelect";
+import GetSemestersByBranch from "./GetSemesterByBranch";
+import { Switch } from "../ui/switch";
+import { Label } from "../ui/label";
+import { loadToast, updateToast } from "@/utils/tostify";
+import { ChangeSectionsNumber } from "./ChangeSectionsNumeber";
 
 interface mytype {
   row: {
     original: {
-        id: string;
-        section: number;
-        semesterId: string;
-      faculty:[]
+      id: string;
+      name: string;
+      isSwappingEnabled: boolean;
+      numberOfSectionForSwapping: number;
     };
   };
 }
@@ -59,59 +66,49 @@ interface mytype {
 export type Root = Root2;
 
 export interface Root2 {
-  branch: B[];
-  
+  branch: branches[];
+  semesters: Semester[];
 }
 
-export interface Semester {
+
+export interface branches {
+  id: string;
+  name: string
+}
+
+
+export type Semester = {
+  id: string;
   number: number;
-  id: string;
-}
+  isSwappingEnabled: boolean;
+  numberOfSectionForSwapping: number;
 
-export interface B {
-  id: string;
-  name: string;
-  semesters?: Semester[];
-}
-
-export interface Branch {
-  id: string;
-  name: string;
-}
-
-export type Sections = {
-  id: string;
-  section: number;
-  semesterId: string;
-faculty:[]
 };
 
 
 
 
-export function SectionsTable({
+export function SwappingControlTable({
   data,
-  branchInfo,
+  branches,
+  currentBranch
 }: {
-  data: Sections[];
-  branchInfo: null | {
-    semester?: number|string;
-    semesterId?: string;
-    branch?: string;
-    branchId?: string;
-    branchAndSemesterId: Root;
-  };
+  data: Semester[];
+  branches: branches[],
+  currentBranch: string
 }) {
   const dispatch = useAppDispatch();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
+
+
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
-  const columns: ColumnDef<Sections>[] = [
+  const columns: ColumnDef<Semester>[] = [
     {
       id: "select",
       header: ({ table }) => (
@@ -137,12 +134,12 @@ export function SectionsTable({
       enableHiding: false,
     },
     {
-      accessorKey: "section",
+      accessorKey: "number",
       header: "Name",
       cell: ({ row }) => {
         return (
           <div className="flex text-gray-400 flex-row capitalize">
-          {branchInfo?.branch}- {row.getValue("section") as any}
+            Semester - {`${row.original.number}`}
           </div>
         );
 
@@ -154,42 +151,56 @@ export function SectionsTable({
         // </div>
       },
     },
+
     {
-      accessorKey: "faculty",
-      header: "Faculty",
+      accessorKey: "numberOfSectionForSwapping",
+      header: "No of Sections",
       cell: ({ row }) => (
         <div className="capitalize  text-[12px] text-gray-400 font-medium">
-         <ul>
-         {row.original.faculty.map((f:any)=>{
-            return <li key={f}>{f.name}</li>
-          })}
-         </ul>
+          {row.original.numberOfSectionForSwapping}
         </div>
       ),
     },
-   
 
     {
       accessorKey: "id",
       header: "Actions",
-      cell: ({ row }: mytype) => {
+      cell: ({ row }: any) => {
         return (
-          <div className="flex flex-row gap-2">
+          <div className="flex flex-row gap-4">
             <div className="flex gap-2">
-           
-              <button
-                onClick={() => {
-                  dispatch(setAssignSubjectToFaculty({ open: true, section:row.original.section,sectionId:row.original.id,event:"assignFactultyToSection" }));
-                }}
-                className=" bg-cyan-800 px-2 py-[2px] font-bold text-[10px] rounded-[3px]"
-              >
-                Assign Faculties
-              </button>
+
+              <div className="flex items-center space-x-2">
+                <Switch onCheckedChange={async (v) => {
+                  //set the value of isSwappingEnabled
+                  const newValue = !row.original.isSwappingEnabled;
+                  //update
+                  setSorted((prev) => prev.map((item) => {
+                    if (item.id === row.original.id) {
+                      return { ...item, isSwappingEnabled: newValue }
+                    }
+                    return item;
+                  }));
+                  const toastId = loadToast("Updating Swapping Status...");
+                  const res = await setSectionSwappingEnabled(row.original.id, newValue);
+                  if (res.status === 201) {
+                    return updateToast(toastId, "Updated Successfully", "success");
+                  }
+                  setSorted((prev) => prev.map((item) => {
+                    if (item.id === row.original.id) {
+                      return { ...item, isSwappingEnabled: !newValue }
+                    }
+                    return item;
+                  }));
+                  return updateToast(toastId, "Something went wrong", "error");
+                }} id="airplane-mode" checked={row.original.isSwappingEnabled} />
+                <Label htmlFor="airplane-mode">{row.original.isSwappingEnabled?"Enabled":"Disabled"}</Label>
+              </div>
             </div>
 
-            
+            <ChangeSectionsNumber number={row.original.numberOfSectionForSwapping} sectionId={row.original.id}/> 
 
-          
+
           </div>
         );
 
@@ -203,8 +214,17 @@ export function SectionsTable({
     },
   ];
 
+
+  const [sorted, setSorted] = React.useState(
+    [...(data)].sort((a, b) => a.number - b.number));
+
+  React.useEffect(() => {
+    setSorted([...(data)].sort((a, b) => a.number - b.number));
+    setRowSelection({});
+  }, [data]);
+
   const table = useReactTable({
-    data,
+    data: sorted,
     columns,
     // rowCount: data.length,
     onSortingChange: setSorting,
@@ -226,7 +246,6 @@ export function SectionsTable({
     <div className="w-full px-1 md:px-2 bg-body mt-4 rounded-md scrollbar-thin scrollbar-thumb-cyan-600">
       <AddNotesPYQSDialog />
       <DeleteConfirm />
-      
       <div className="flex gap-2 flex-col py-4 rounded-md">
         <input
           placeholder="Filter Subjects..."
@@ -234,7 +253,7 @@ export function SectionsTable({
           onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)
           }
-          className="max-w-sm  bg-body p-2 border border-gray-600 rounded-[4px] outline-none"
+          className="max-w-sm  bg-body p-2 border bg-transparent border-gray-600 rounded-[4px] outline-none"
         />
         <div className="flex gap-2 justify-start ">
           {/* <button
@@ -244,9 +263,9 @@ export function SectionsTable({
             Add Subject{" "}
           </button> */}
 
-          {branchInfo !== null && <FilterSemesters event="section" data={branchInfo} />}
+          <GetSemestersByBranch branchesDetails={branches} currentBranch={currentBranch} />
 
-          {branchInfo === null && <AddSubjects />}
+          {/* {isSemesterData === null && <AddSubjects />} */}
           <DropdownMenu>
             <DropdownMenuTrigger
               className="bg-body focus:!ring-transparent"
@@ -289,9 +308,9 @@ export function SectionsTable({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                     </TableHead>
                   );
                 })}

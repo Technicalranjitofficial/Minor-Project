@@ -59,7 +59,7 @@ export const authOption:NextAuthOptions={
     }
 },
     pages:{
-       signIn:"/Auth",
+       signIn:"/auth",
         newUser: '/'
     },
     session:{

@@ -10,7 +10,8 @@ const initialState:initialState={
         open:false,
         data:null,
         editData:null,
-        isEdit:false
+        isEdit:false,
+    
         
     },
     updateConfirmOpen:false,

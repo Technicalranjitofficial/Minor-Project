@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import sectionswap from "../reducers/sectionswap";
 import academicReducer from "../reducers/academicReducer";
 import adminReducers from "../reducers/adminReducers";
+import CalculatorSlice from "../reducers/CalculatorSlice";
 
 
 export const store = configureStore({
@@ -10,6 +11,7 @@ export const store = configureStore({
         sectionSwap:sectionswap,
         AcademicSlice:academicReducer,
         adminSlice: adminReducers,
+        CalculatorSlice:CalculatorSlice,
 
     }
 })

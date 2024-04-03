@@ -399,4 +399,6 @@ export const addSubject =async(data:{
       status:500
     }
   }
+
+
 }

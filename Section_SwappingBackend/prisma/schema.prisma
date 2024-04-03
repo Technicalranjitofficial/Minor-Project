@@ -126,6 +126,8 @@ model Semester {
   branchId          String             @unique @db.ObjectId
   semesterSectionId String[]           @db.ObjectId
   semesterSections  SemesterSections[]
+  isSwappingEnabled Boolean? @default(false) 
+  numberOfSectionForSwapping Int? @default(0)
 
 }
 

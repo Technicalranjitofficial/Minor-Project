@@ -134,8 +134,8 @@ export function DeleteConfirm() {
             </Label>
             {data.event === "mutipleDeletePYQS" && <ul>
                 {
-                    data.mutipleDataName?.map((name)=>{
-                        return <li className="list-disc">{name}</li>
+                    data.mutipleDataName?.map((name,i)=>{
+                        return <li key={i} className="list-disc">{name}</li>
                     }) 
                 }
             </ul>

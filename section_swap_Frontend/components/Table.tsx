@@ -12,7 +12,7 @@ import { useAppDispatch, useAppSelector } from '@/Redux/hooks';
 import { acceptUser, deleteUser } from '@/utils/functions';
 import { setDisplayMessage, setLoading, setLoadingIndex, setMessage } from '@/Redux/reducers/sectionswap';
 import { useSession } from 'next-auth/react';
-import { acceptSwapRequest } from '@/ServerActions/actions';
+import { acceptSwapRequest, deleteSwapByAdmin } from '@/ServerActions/actions';
 import { loadToast, updateToast } from '@/utils/tostify';
 
 export default function BasicTable() {
@@ -111,14 +111,13 @@ export default function BasicTable() {
 
                 {
                   session.data?.user?.email === "21053420@kiit.ac.in" && <button className='ml-1 bg-red-800 font-bold px-3 py-1' onClick={async () => {
-                    const res = await deleteUser(v.id);
-                    if (res) {
-                      dispatch(setMessage({ msg: "Deleted Sucessfully", type: "success" }));
-                      dispatch(setDisplayMessage(true));
-                    } else {
-                      dispatch(setMessage({ msg: "User might not available", type: "error" }));
-                      dispatch(setDisplayMessage(true));
-                    }
+                    const toastId = loadToast("Deleting Request");
+                    const res = await deleteSwapByAdmin(v.email);
+
+                   if(res.status===200){
+                    return updateToast(toastId, "Deleted Successfully", "success");
+                   }
+                   return updateToast(toastId, res.message, "error");
                   }}>Delete</button>
                 }
 

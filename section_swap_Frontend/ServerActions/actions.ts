@@ -110,4 +110,84 @@ export const updateSwapDetails = async (user: {
     console.log(error);
     return 500;
   }
+
+};
+
+export const deleteSwapByAdmin = async (email:string) => {
+  try {
+    const res = await fetch(
+      `${process.env.SERVER_URL}/swapping/deleteSwapByAdmin?email=${email}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        cache:"no-store"
+        
+      }
+    );
+
+    const data = await res.json();
+    console.log(data);
+    if (res.status === 200) {
+      revalidateTag("swapping");
+    }
+    return {
+        status: res.status,
+        message: res.statusText
+    
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+        status: 500,
+        message: "Internal Server Error"
+    
+    }
+  }
+
+};
+
+
+
+
+
+
+
+
+export const deleteSwapUser = async (email:string) => {
+  try {
+    const res = await fetch(
+      `${process.env.SERVER_URL}/swapping/deleteSwapByUser?email=${email}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        cache:"no-store"
+
+        
+      }
+    );
+
+    console.log(res);
+    const data = await res.json();
+    console.log(data);
+    if (res.status === 200) {
+      revalidateTag("swapping");
+    }
+    return {
+        status: res.status,
+        message: res.statusText
+    
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+        status: 500,
+        message: "Internal Server Error"
+    
+    }
+  }
+
 };

@@ -6,7 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { PrismaService } from './prisma.service';
 import { UserController } from './user/user.controller';
 import { AuthController } from './auth/auth.controller';
-import { UserService } from './user/user.service';
+import { UserService } from './user/user.service'; 
 import { JwtService } from '@nestjs/jwt';
 import { SwappingController } from './swapping/swapping.controller';
 import { SwappingModule } from './swapping/swapping.module';

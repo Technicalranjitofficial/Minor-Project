@@ -46,7 +46,6 @@ import { DeleteConfirm } from "./DeleteConfirm";
 
 import FilterSemesters from "./FilterSemesters";
 import { MultiSelect } from "./MultiSelect";
-import { AssignSubjectToFaculties } from "./AssignSubjectToFaculties";
 import { AddBranches } from "./AddBranches";
 
 interface mytype {
@@ -194,7 +193,6 @@ export function BranchTable({
     <div className="w-full px-1 md:px-2 bg-body mt-4 rounded-md scrollbar-thin scrollbar-thumb-cyan-600">
       <AddNotesPYQSDialog />
       <DeleteConfirm />
-      <AssignSubjectToFaculties/>
       <div className="flex gap-2 flex-col py-4 rounded-md">
         <input
           placeholder="Filter Subjects..."

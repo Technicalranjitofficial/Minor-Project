@@ -68,43 +68,6 @@ export default function Navbar() {
     document.body.classList.remove("disable-scrollBar");
   };
 
-  const components: { title: string; href: string; description: string }[] = [
-    {
-      title: "Alert Dialog",
-      href: "/docs/primitives/alert-dialog",
-      description:
-        "A modal dialog that interrupts the user with important content and expects a response.",
-    },
-    {
-      title: "Hover Card",
-      href: "/docs/primitives/hover-card",
-      description:
-        "For sighted users to preview content available behind a link.",
-    },
-    {
-      title: "Progress",
-      href: "/docs/primitives/progress",
-      description:
-        "Displays an indicator showing the completion progress of a task, typically displayed as a progress bar.",
-    },
-    {
-      title: "Scroll-area",
-      href: "/docs/primitives/scroll-area",
-      description: "Visually or semantically separates content.",
-    },
-    {
-      title: "Tabs",
-      href: "/docs/primitives/tabs",
-      description:
-        "A set of layered sections of content—known as tab panels—that are displayed one at a time.",
-    },
-    {
-      title: "Tooltip",
-      href: "/docs/primitives/tooltip",
-      description:
-        "A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.",
-    },
-  ];
 
   const [open, setOpen] = useState(false);
 
@@ -113,7 +76,7 @@ export default function Navbar() {
   return (
     <div
       style={paragraph.style}
-      className="w-screen  text-lg md:text-base bg-[#121212] bg-main_body z-50  fixed left-0 top-0 h-auto"
+      className="w-screen  text-lg md:text-base bg-[#121212] bg-main_body z-40  fixed left-0 top-0 h-auto"
     > 
     <div
     className={`w-full bg-gradient-to-r from-fuchsia-700 to-purple-800 flex md:justify-center  px-2 items-center relative py-3 ${
@@ -178,6 +141,18 @@ export default function Navbar() {
                
               </li>
             </Link>
+
+            <Link href="/calculator" onClick={handleOnCloseMenu}>
+              <li
+                className={`border-b border-gray-700 py-2  ${
+                  router === "/calculator" ? "text-teal-500" : "text-slate-300"
+                }`}
+              >
+                CGPA Calculator
+               
+              </li>
+            </Link>
+           
            
             <a
               target="_blank"
@@ -194,7 +169,7 @@ export default function Navbar() {
             <Link
               style={headFont.style}
               onClick={handleOnCloseMenu}
-              href="/Auth"
+              href="/auth"
               className=" btn-shadow py-2 mt-2 text-center rounded-md"
             >
               Login
@@ -306,6 +281,16 @@ export default function Navbar() {
                 Swapping
               </Link>
             </li>
+            <li>
+              <Link
+                className={`${
+                  router.includes("calculator") ? "text-teal-500" : "text-slate-300"
+                } hover:text-teal-500`}
+                href="/calculator"
+              >
+                CGPA Calculator
+              </Link>
+            </li>
            
            {session.data?.user &&  emails.includes(session.data?.user.email)&&
            
@@ -319,7 +304,7 @@ export default function Navbar() {
            {session.status == "unauthenticated" && 
            <Link
             
-            href="/Auth"
+            href="/auth"
             className=" bg-cyan-700 px-4 rounded-[5px] py-2 text-center "
           >
             Login

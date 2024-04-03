@@ -20,7 +20,7 @@ const page = async (props: Props) => {
 
 
 
-  const res = await fetch(`http://localhost:8000/notes/getAllBranches`, {
+  const res = await fetch(`${process.env.SERVER_URL}/notes/getAllBranches`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

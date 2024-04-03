@@ -15,12 +15,16 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import Update from "./Update";
 
-export default function MainContent({infoData,user,branchInfo}:{
-  infoData:TableInfo[],
-  user:TableInfo,
-  branchInfo:{
-    branch:string,
-    semester:number
+export default function MainContent({ infoData, user, branchInfo,semesterDetails }: {
+  infoData: TableInfo[],
+  user: TableInfo,
+  branchInfo: {
+    branch: string,
+    semester: number
+  },
+  semesterDetails: {
+    numberOfSectionForSwapping: number,
+    isSwappingEnabled: boolean
   }
 }) {
   const [data, setData] = useState([]);
@@ -59,22 +63,41 @@ export default function MainContent({infoData,user,branchInfo}:{
     // const interval = setInterval(fetchData,10000);
     // return()=>clearInterval(interval);
     // dispatch(setMyData(user));
-    if(user){
+    if (user) {
       console.log(user)
       dispatch(setMyData(user));
+    }else{
+      dispatch(setMyData({
+       alloted:0,
+       branch:"",
+       contact:"",
+       editLeft:0,
+       email:"",
+       id:"",
+       lookingFor:[],
+       matched:false,
+       name:"",
+       remoteUser:{
+        email:"",
+        id:"",
+        name:""
+       },
+       Semester:0
+       
+      }))
     }
     dispatch(setTableInfo(infoData));
-  }, [user,infoData]);
+  }, [user, infoData]);
 
   return (
     <>
       <div className="">
-        <Modal  />
-        <Update/>
+        <Modal />
+        <Update />
 
-        <Snackbar open={openMessage} autoHideDuration={6000} onClose={()=>dispatch(setDisplayMessage(false))}>
-        <Alert severity={`${message.type as AlertColor}`} sx={{ width: "100%" }}>
-           {JSON.stringify(message.msg)}
+        <Snackbar open={openMessage} autoHideDuration={6000} onClose={() => dispatch(setDisplayMessage(false))}>
+          <Alert severity={`${message.type as AlertColor}`} sx={{ width: "100%" }}>
+            {JSON.stringify(message.msg)}
           </Alert>
         </Snackbar>
 
@@ -87,19 +110,20 @@ export default function MainContent({infoData,user,branchInfo}:{
           {/* {myData.alloted!==0 && JSON.stringify(myData)}
         
         */}
-        
 
-          { !myData.id? (
+
+          {!myData.id ? (
             <div className="font-sans  p-8 bg-slate-800 border-2 rounded-[5px]">
               <div>
                 You have not created your match yet.{" "}
                 <button
                   className="text-blue-500"
                   onClick={() => dispatch(setOpenCreate({
-                    open:true,
-                    data:{
-                      semester:branchInfo.semester,
-                      branch:branchInfo.branch
+                    open: true,
+                    data: {
+                      semester: branchInfo.semester,
+                      branch: branchInfo.branch,
+                      sectionNumber:semesterDetails.numberOfSectionForSwapping
                     }
                   }))}
                 >
@@ -111,11 +135,11 @@ export default function MainContent({infoData,user,branchInfo}:{
             <DisplayUser
               currentAllotedSection={myData.alloted}
               currentLookingForSections={myData.lookingFor}
-             
+
               matchedUserEmail={myData.remoteUser.email}
               matchedUserName={myData.remoteUser.name}
-             
-           
+
+
               senderName={myData.name}
             />
           ) : (
@@ -130,8 +154,8 @@ export default function MainContent({infoData,user,branchInfo}:{
           )}
           <h1 className="text-center font-bold py-5 text-red-400">Refresh your page to get fresh data <span className="text-cyan-600">({infoData.length} Users have Reuested)</span></h1>
           <h1 className="py-10 px-10 text-bold">
-          {/* Hope You have found found this site helpfu.If you find helpful then please give your feedback here and stay connected we are bringing something cool soon. */}
-          You can change your details for <span className="text-red-500">3 times</span> but you should not have matched with other user. If you want to change your contact no or want to <span className="text-red-500">unmatch</span> or <span className="text-red-500">remove</span> your details from kiitconnect then contact 
+            {/* Hope You have found found this site helpfu.If you find helpful then please give your feedback here and stay connected we are bringing something cool soon. */}
+           After matching with any user you won&apos;t be able to delete your profile.If you still want to unswap or remove your account send a mail to the support team
             {/* <a href="https://www.kiitconnect.live/feedback" target="_blank" className="text-green-400">Feedback Here</a> */}
             <a href="mailto:21053420@kiit.ac.in" target="_blank" className="text-green-400"> 21053420@kiit.ac.in</a>
           </h1>

@@ -1,7 +1,9 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  Param,
   Post,
   Query,
   Res,
@@ -53,76 +55,42 @@ export class SwappingController {
   }
 
 
-  @Get('test')
-  async getTest() {
-    // const stream = fs.createReadStream('video.mp4');
-    this.minioService.client.fPutObject(
-      'kiitconnect',
-      'vid35.mp4',
-      './video3.mp4',
-      {
-        'Content-Type': 'video/mp4',
-      },
-      function (err, objInfo) {
-        if (err) {
-          return console.log(err); // err should be null
-        }
-        console.log('Success', objInfo);
-      },
-    );
-    // var fileStat = fs.stat('video.mp4', (err, stats) => {
-    //   if (err) {
-    //     return console.log(err);
-    //   }
-    //   this.minioService.client.fPutObject(
-    //     'kiitconnect',
-    //     '40mbfile22.video',
-    //     "./video.mp4",
-    //     {
-    //         "Content-Type": "video/mp4",
-    //     },
-    //     function (err, objInfo) {
-    //       if (err) {
-    //         return console.log(err); // err should be null
-    //       }
-    //       console.log('Success', objInfo);
-    //     },
-    //   );
-    // });
+  @Get("getOnlyBranches")
+  async getSwappingSetting(){
+    return this.swappingService.getOnlyBrances();
   }
 
-  @Get('download')
-  async downloadFile(@Res() response: Response) {
-    const stream = await this.minioService.client.getObject(
-      'test',
-      '40mbfile.txt',
-    );
-    //      response.headers.set('Content-Type', 'application/octet-stream');
-    // response.headers.set('Content-Disposition', `attachment; filename="test.txt"`);
-
-    //  stream.pipe(response);
+  @Get("getSemestersByBranchId")
+  async getSemestersByBranch(@Query() dto:{branch:string}){
+    return this.swappingService.getSemestersByBranchId(dto.branch);
   }
 
-  @Post('upload')
-  @UseInterceptors(FileInterceptor('file'))
-  async uploadFile(
-    @UploadedFile() file: Express.Multer.File,
-    @Body() dto: any,
-  ) {
-
-
-    try {
-      console.log(file);
-      return await this.minioService.client.fPutObject(
-        'technicalranjit',
-        file.originalname,
-        file.path,
-      );
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
+  @Get("updateSemester")
+  async updateSemester(){
+    return this.swappingService.updateSemester();
   }
+
+  @Post("setSectionSwappingEnabled")
+  async setSectionSwappingEnabled(@Body() dto:{sectionId:string,event:boolean}){
+    return this.swappingService.setSectionSwappingEnabled(dto.sectionId,dto.event);
+  }
+
+  @Post("updateSectionNumber")
+  async updateSectionNumber(@Body() dto:{sectionId:string,number:number}){
+    return this.swappingService.updateSectionNumber(dto.sectionId,dto.number);
+  }
+
+  @Delete('deleteSwapByAdmin')
+  async deleteSwapByAdmin(@Query() dto:{email:string}){
+    return this.swappingService.deleteSwappingByAdmin(dto.email);
+  }
+
+  @Delete('deleteSwapByUser')
+  async deleteSwapByUser(@Query() dto:{email:string}){
+    return this.swappingService.deleteSwapByUser(dto.email);
+  }
+ 
+
 
   // return this.swappingService.uploadFile(dto);
 }

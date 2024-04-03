@@ -1,5 +1,7 @@
 import { useAppDispatch, useAppSelector } from '@/Redux/hooks';
 import { setIsUpdate, setOpenCreate } from '@/Redux/reducers/sectionswap';
+import { deleteSwapUser } from '@/ServerActions/actions';
+import { loadToast, updateToast } from '@/utils/tostify';
 import React, { use } from 'react';
 
 interface MatchDetailsProps {
@@ -47,6 +49,15 @@ const SingleUser: React.FC<MatchDetailsProps> = () => {
           
           }))
         }} className='bg-green-800 disabled:bg-gray-600 px-3 py-1 font-bold rounded-sm'>{editLeft<=0?"Contact us for Limit Increase": <p> Edit ( <span className='text-red-400'>{editLeft} Left</span> )</p>}</button>
+
+        <button onClick={async()=>{
+          const toastId = loadToast("Deleting your profile,please wait");
+          const res= await deleteSwapUser(email);
+          if(res.status===200){
+            return updateToast(toastId,"Profile Delete Successfully","success");
+          }
+          return updateToast(toastId,res.message,"error");
+        }}>Delete Profile</button>
       </div>
     </div>
   );

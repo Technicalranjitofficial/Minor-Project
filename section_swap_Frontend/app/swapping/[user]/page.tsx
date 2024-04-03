@@ -26,13 +26,13 @@ const page = async (props: Props) => {
     throw new Error("Bad Request");
   }
 
-  const res = await fetch(`http://localhost:8000/swapping/swappingData?semester=${semester}&branch=${branch}&email=${session.user?.email}`, {
+  const res = await fetch(`${process.env.SERVER_URL}/swapping/swappingData?semester=${semester}&branch=${branch}&email=${session.user?.email}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json'
     },
 
-    cache: 'no-cache',
+    cache: 'force-cache',
     next:{
       tags:["swapping"]
     }
@@ -41,9 +41,15 @@ const page = async (props: Props) => {
 
   const data = await res.json();
   console.log(data);
+
+  if(!data.semesterDetails.isSwappingEnabled) return <div className='pt-28'>
+    <div className='w-full bg-cyan-700 text-white py-2 px-2 text-center font-bold text-xl'>
+      <h1>Currently Section Swapping is Disabled for this Section</h1>
+    </div>
+  </div>
   return (
     <div>
-      <MainContent branchInfo={
+      <MainContent semesterDetails={data.semesterDetails} branchInfo={
         {
           branch: branch.toString(),
           semester: Number(semester)

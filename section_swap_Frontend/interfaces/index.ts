@@ -7,7 +7,8 @@ export interface initialState{
         open:boolean,
        data:null|{
         semester:number,
-        branch:string
+        branch:string;
+        sectionNumber:number
        },
        isEdit:boolean;
        editData:null|{

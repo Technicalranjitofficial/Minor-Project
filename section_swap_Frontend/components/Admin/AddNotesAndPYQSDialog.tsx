@@ -59,7 +59,7 @@ export function AddNotesPYQSDialog() {
         <DialogHeader>
           <DialogTitle>{data.data?.type}</DialogTitle>
           <DialogDescription>
-            Make changes to your profile here. Click save when you're done.
+            Make changes to your profile here. Click save when you&apos;re done.
           </DialogDescription>
         </DialogHeader>
         <div className="w-full h-full mx-auto overflow-y-auto scrollbar scrollbar-none scrollbar-thumb-cyan-600">

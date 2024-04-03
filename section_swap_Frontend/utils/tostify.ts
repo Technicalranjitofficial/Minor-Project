@@ -4,7 +4,10 @@ import { Id, toast } from "react-toastify"
 export const loadToast = (message: string) => {
     const toastId = toast.loading(message, {
       position: "top-center",
-      className: "text-white bg-black border border-gray-800",
+      className: "text-black bg-[#11111] border border-gray-800",
+     
+      bodyClassName:"bg-black",
+
     });
     return toastId;
   };
@@ -15,7 +18,7 @@ export const loadToast = (message: string) => {
       type: type as any,
       isLoading: false,
       position: "top-center",
-      className: "text-white bg-black border border-gray-800",
+      className: "text-black bg-[#11111] border border-gray-800",
       autoClose: 2000,
     });
   };

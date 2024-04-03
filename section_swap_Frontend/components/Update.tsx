@@ -20,7 +20,7 @@ const Update = () => {
   const p = useRef<HTMLInputElement>(null);
 
   return (
-    <div className={`w-screen ${(open.open && open.isEdit )? "" : "hidden"}  flex items-center justify-center fixed flex-col left-0 right-0 top-0 h-screen bg-gray-900/90 p-2 md:p-3`}>
+    <div className={`w-screen ${(open.open && open.isEdit )? "" : "hidden"} z-50 flex items-center justify-center fixed flex-col left-0 right-0 top-0 h-screen bg-gray-900/90 p-2 md:p-3`}>
       <UpdateConfirmModal />
 
       <div className='py-5'>
@@ -33,7 +33,7 @@ const Update = () => {
         <h1 className={`mt-2 ml-2  `}>Select Alloted Section</h1>
         <div className='grid grid-cols-4 lg:grid-cols-8 p-2 mt-3 gap-1 grid-flow-row'>
           {section.map((val, index) => {
-            return <button key={index} onClick={() => dispatch(updateAllotedSection(val))} className={`bg-gray-900 ${open.editData?.alloted === val && "bg-green-700"}  rounded-md  p-2`}>{val}</button>
+            return <button disabled={open.editData?.lookingFor.includes(index+1)} key={index} onClick={() => dispatch(updateAllotedSection(val))} className={`bg-gray-900 ${open.editData?.alloted === val && "bg-green-700"}  rounded-md  p-2 disabled:bg-gray-700`}>{val}</button>
           })}
         </div>
         <h1 className='mt-2 ml-2'>Select Needed Section(Multi Select Available)</h1>
