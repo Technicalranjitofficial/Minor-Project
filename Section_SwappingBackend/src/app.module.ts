@@ -17,6 +17,10 @@ import { NotesController } from './notes/notes.controller';
 import { NotesModule } from './notes/notes.module';
 import { NotesService } from './notes/notes.service';
 import { DriveService } from './drive.service';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
+import * as path from 'path';
+import { MyMailService } from './mail.service';
 
 
 @Module({
@@ -28,8 +32,27 @@ import { DriveService } from './drive.service';
     secretKey: "f8NV77eMIQIkHNTN0JtYPwXJNSW525xdFuFIBZBW",
   }),MulterModule.register({
     dest: './uploads', // Set your upload directory
+  }), MailerModule.forRoot({
+    transport: {
+    host: 'smtp.gmail.com',
+    port:587,
+      auth: { 
+        user: `${process.env.MAIL_USERNAME}`,
+        pass: `${process.env.MAIL_PASSWORD}`,
+      }, 
+    },
+    defaults: {
+      from: 'KAKSHA<notification.kaksha@gmail.com>',
+    },
+    template: {
+      dir: path.join(__dirname , '../src/template'), // Replace with the actual path to your templates
+      adapter: new EjsAdapter(), // Use the appropriate adapter for your templating engine
+      options: {
+        strict: false,
+      },
+    }, 
   }), NotesModule],
   controllers: [UserController,AuthController, SwappingController, NotesController],
-  providers: [AuthService,PrismaService,UserService,JwtService,SwappingService,NotesService,DriveService],
+  providers: [AuthService,PrismaService,UserService,JwtService,SwappingService,NotesService,DriveService,MyMailService],
 })
 export class AppModule {}

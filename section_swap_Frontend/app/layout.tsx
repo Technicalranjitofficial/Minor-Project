@@ -10,8 +10,8 @@ import 'react-toastify/dist/ReactToastify.css';
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'KIIT-CONNECT | Section Swap',
-  description: 'Welcome to Kiit Connect - Your one-stop website for B.Tech students at KIIT University! Access comprehensive study materials tailored for your academic success. Stay updated with the latest placements and events happening on campus',
+  title: 'KAKSHA | ACADEMIC PORTAL',
+  description: 'Welcome to Kaksha - Your one-stop website for B.Tech students at KIIT University! Access comprehensive study materials tailored for your academic success. Stay updated with the latest placements and events happening on campus',
 }
 
 export default function RootLayout({

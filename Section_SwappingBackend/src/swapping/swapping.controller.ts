@@ -91,6 +91,9 @@ export class SwappingController {
   }
  
 
-
+@Get("sendTestMail")
+async sendTestMail(){
+  return this.swappingService.sendTestMail();
+}
   // return this.swappingService.uploadFile(dto);
 }

@@ -84,8 +84,8 @@ export function Calculator() {
                   {/* <SelectItem value="m@example.com">m@example.com</SelectItem>
                   <SelectItem value="m@google.com">m@google.com</SelectItem>
                   <SelectItem value="m@support.com">m@support.com</SelectItem> */}
-                  {Branch.map((branch) => (
-                    <SelectItem value={branch}>{branch}</SelectItem>
+                  {Branch.map((branch,i) => (
+                    <SelectItem key={i} value={branch}>{branch}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -120,7 +120,7 @@ export function Calculator() {
                   <SelectItem value="m@google.com">m@google.com</SelectItem>
                   <SelectItem value="m@support.com">m@support.com</SelectItem> */}
 
-                  {Semester.map((semester) => <SelectItem value={semester.toString()}>{semester.toString()}</SelectItem>)}
+                  {Semester.map((semester,i) => <SelectItem  key={i} value={semester.toString()}>{semester.toString()}</SelectItem>)}
                 </SelectContent>
               </Select>
 

@@ -99,7 +99,7 @@ export default function Navbar() {
             <Link onClick={handleOnCloseMenu} href="/">
               {/* <span className="text-cyan-400 ">KIIT-</span>CONNECT */}
               <p className=" font-extrabold bg-clip-text text-transparent bg-[linear-gradient(to_right,theme(colors.indigo.400),theme(colors.indigo.100),theme(colors.sky.400),theme(colors.fuchsia.400),theme(colors.sky.400),theme(colors.indigo.100),theme(colors.indigo.400))] bg-[length:200%_auto] animate-gradient mb-2">
-                KIIT-KAKSHA
+                KAKSHA
               </p>
             </Link>
           </h1>
@@ -156,7 +156,7 @@ export default function Navbar() {
            
             <a
               target="_blank"
-              href="https://github.com/technicalranjitofficial"
+              href="https://github.com/Technicalranjitofficial/Minor-Project"
             >
               <li
                 className={`border-b border-gray-700 py-2  ${"text-slate-300"}`}
@@ -220,7 +220,7 @@ export default function Navbar() {
             <Link href="/">
               {/* <span className="text-cyan-400 ">KIIT-</span>CONNECT */}
               <p className="t font-extrabold bg-clip-text text-transparent bg-[linear-gradient(to_right,theme(colors.indigo.400),theme(colors.red.100),theme(colors.sky.400),theme(colors.pink.400),theme(colors.sky.400),theme(colors.indigo.100),theme(colors.indigo.400))] bg-[length:200%_auto] animate-gradient mb-1">
-                KIIT-KAKSHA
+                KAKSHA
               </p>
             </Link>
           </h1>

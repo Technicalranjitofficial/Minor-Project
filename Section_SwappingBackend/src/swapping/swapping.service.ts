@@ -6,11 +6,15 @@ import {
   NotFoundException,
 } from "@nestjs/common";
 import { CustomException } from "src/CustomException";
+import { MyMailService } from "src/mail.service";
 import { PrismaService } from "src/prisma.service";
 
 @Injectable()
 export class SwappingService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly mailService: MyMailService
+  ) {}
 
   async getAllSwapping(dto: {
     branch: string;
@@ -62,17 +66,17 @@ export class SwappingService {
           branchId: findSemesterId.id,
           number: Number(dto.semester),
         },
-        select:{
-          numberOfSectionForSwapping:true,
-          isSwappingEnabled:true
-        }
+        select: {
+          numberOfSectionForSwapping: true,
+          isSwappingEnabled: true,
+        },
       });
 
       console.log(swappingInfo, getMyInfo);
       return {
         getMyInfo,
         swappingInfo,
-        semesterDetails:findSemetserDetails
+        semesterDetails: findSemetserDetails,
       };
     } catch (error) {
       console.log(error);
@@ -168,6 +172,31 @@ export class SwappingService {
 
       if (!update)
         throw new InternalServerErrorException("Error occured while updating");
+
+        console.log(remoteUser.name,remoteUser.email,remoteUser.contact,currentUser.name,currentUser.alloted,currentUser.lookingFor,remoteUser.alloted,remoteUser.lookingFor)
+
+      await this.mailService.sendMailToSwapFound(
+        remoteUser.name,
+        remoteUser.email,
+        remoteUser.contact,
+        currentUser.name,
+        currentUser.alloted,
+        currentUser.lookingFor,
+        remoteUser.alloted,
+        remoteUser.lookingFor
+      );
+
+      await this.mailService.sendMailToSwapFound(
+        currentUser.name,
+        currentUser.email,
+        currentUser.contact,
+        remoteUser.name,
+        remoteUser.alloted,
+        remoteUser.lookingFor,
+        currentUser.alloted,
+        currentUser.lookingFor
+      );
+
       return update;
     } catch (error) {
       if (error instanceof ConflictException) {
@@ -318,18 +347,22 @@ export class SwappingService {
     }
   }
 
-  async deleteSwappingByAdmin(email:string){
+  async deleteSwappingByAdmin(email: string) {
     try {
       const user = await this.prisma.swapping.findUnique({
-        where:{
-          email:email
-        }
+        where: {
+          email: email,
+        },
       });
-      if(!user) throw new NotFoundException("User not found");
+      if (!user) throw new NotFoundException("User not found");
 
-      if(user.remoteUserId){
+      if (user.remoteUserId) {
+        const remoteUser = await this.prisma.swapping.findUnique({
+          where:{
+            id:user.remoteUserId
+          }
+        })
         const update = await this.prisma.$transaction([
-
           // this.prisma.swapping.update({
           //   where:{
           //     id:user.id
@@ -347,100 +380,131 @@ export class SwappingService {
           //     remoteUserId:null
           //   }
           // }),
-          
+
           // this.prisma.swapping.delete({
           //   where:{
           //     id:user.id
           //   },
-            
-           
+
           // }),
           this.prisma.swapping.updateMany({
-            where:{
-              OR:[
+            where: {
+              OR: [
                 {
-                  id:user.id
+                  id: user.id,
                 },
                 {
-                  id:user.remoteUserId
+                  id: user.remoteUserId,
                 },
-                
               ],
             },
-            data:{
-              remoteUserId:null
-            }
+            data: {
+              remoteUserId: null,
+            },
           }),
           this.prisma.swapping.deleteMany({
-            where:{
-              OR:[
+            where: {
+              OR: [
                 {
-                  id:user.id,
-                
+                  id: user.id,
                 },
                 {
-                  id:user.remoteUserId
-                }
-              ]
+                  id: user.remoteUserId,
+                },
+              ],
             },
-           
-          })
+          }),
         ]);
-      
-        return {
-          success:true,
-          message:"User has been deleted successfully"
+
+        if(update){
+          await this.mailService.sendMailToUnmatchedUser(
+            user.email,user.name
+          );
+          await this.mailService.sendMailToUnmatchedUser(remoteUser.email,remoteUser.name)
         }
+
+        return {
+          success: true,
+          message: "User has been deleted successfully",
+        };
       }
       const deleteData = await this.prisma.swapping.delete({
-        where:{
-          id:user.id
-        }
+        where: {
+          id: user.id,
+        },
       });
 
-      if(!deleteData) throw new InternalServerErrorException("Error occured while deleting user");
+      if (!deleteData)
+        throw new InternalServerErrorException(
+          "Error occured while deleting user"
+        );
+
+        await this.mailService.sendMailToRemoveProfileByUser(
+          user.email,
+          user.name
+        )
       return {
-        success:true,
-        message:"User has been deleted successfully"
-      }
+        success: true,
+        message: "User has been deleted successfully",
+      };
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException("Internal Server Error");
-      
     }
   }
 
-  async deleteSwapByUser(email:string){
+  async deleteSwapByUser(email: string) {
     try {
       const user = await this.prisma.swapping.findUnique({
-        where:{
-          email:email
-        }
+        where: {
+          email: email,
+        },
       });
 
-      if(!user) throw new NotFoundException("User not found");
-      if(user.remoteUserId) throw new BadRequestException("You have already accepted a swap");
-
-       
-      
+      if (!user) throw new NotFoundException("User not found");
+      if (user.remoteUserId)
+        throw new BadRequestException("You have already accepted a swap");
 
       const deleteData = await this.prisma.swapping.delete({
-        where:{
-          id:user.id
-        }
+        where: {
+          id: user.id,
+        },
       });
 
-      if(!deleteData) throw new InternalServerErrorException("Error occured while deleting user");
+      if (!deleteData)
+        throw new InternalServerErrorException(
+          "Error occured while deleting user"
+        );
+
+        await this.mailService.sendMailToRemoveProfileByUser(user.email,user.name);
       return {
-        success:true,
-        message:"User has been deleted successfully"
-      }
+        success: true,
+        message: "User has been deleted successfully",
+      };
     } catch (error) {
       console.log(error);
-      if(error instanceof BadRequestException){
+      if (error instanceof BadRequestException) {
         throw error;
       }
       throw new InternalServerErrorException("Internal Server Error");
+    }
+  }
+
+  async sendTestMail(){
+    try {
+      
+      await this.mailService.sendMailToSwapFound(
+        "Test",
+        "dranjitkumar16@gmail.com",
+        "1234567890",
+        "Test",
+        1,
+        [1],
+        1,
+        [1]
+      );
+    } catch (error) {
+      
     }
   }
 }
