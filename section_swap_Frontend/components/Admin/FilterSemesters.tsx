@@ -123,7 +123,7 @@ const FilterSemesters = ({
           <SelectGroup>
             <SelectLabel>SELECT</SelectLabel>
             {data?.branchAndSemesterId?.branch[getIndex()as number]?.semesters?.map((b) => {
-              return <SelectItem key={b.id} value={event==="section"?b.id.toString():b.number.toString()}>{branch}-{b.number}</SelectItem>
+              return <SelectItem key={b.id} value={event==="section"?b.id.toString():b.number.toString()}>Sem-{b.number}</SelectItem>
             })}
           </SelectGroup>
         </SelectContent>

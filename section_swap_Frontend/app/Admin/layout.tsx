@@ -32,7 +32,9 @@ export default async function RootLayout({
 
       <div className="flex-1 w-full mx-auto bg-body min-h-screen  md:mx-3 scrollbar scrollbar-none scrollbar-thumb-cyan-600">
         <Header />
+        <div className='overflow-y-auto h-screen pb-28  scrollbar scrollbar-none px-2'>
         {children}
+        </div>
       </div>
     </div>
   )

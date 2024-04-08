@@ -31,7 +31,7 @@ const SingleUser: React.FC<MatchDetailsProps> = () => {
         <h3 className="text-lg  mb-2"><span className='font-bold text-cyan-500'>Alloted Section:</span> {alloted}</h3>
         <p className="text-lg"><span className='font-bold text-cyan-500'>Looking For Sections:</span> {lookingFor.join(", ")}</p>
       </div>
-      <div className='mt-2'>
+      <div className='mt-2 flex gap-2'>
         <button disabled={editLeft<=0}  onClick={()=>{
           dispatch(setIsUpdate(true))
           dispatch(setOpenCreate({
@@ -50,7 +50,7 @@ const SingleUser: React.FC<MatchDetailsProps> = () => {
           }))
         }} className='bg-green-800 disabled:bg-gray-600 px-3 py-1 font-bold rounded-sm'>{editLeft<=0?"Contact us for Limit Increase": <p> Edit ( <span className='text-red-400'>{editLeft} Left</span> )</p>}</button>
 
-        <button onClick={async()=>{
+        <button className='bg-red-800 disabled:bg-gray-600 px-3 py-1 font-bold rounded-sm' onClick={async()=>{
           const toastId = loadToast("Deleting your profile,please wait");
           const res= await deleteSwapUser(email);
           if(res.status===200){

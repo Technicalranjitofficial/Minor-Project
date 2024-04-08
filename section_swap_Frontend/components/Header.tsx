@@ -6,7 +6,7 @@ const Header2 = () => {
 
 
   return (
-    <div className='w-full flex pt-20 md:pt-34 justify-evenly md:flex-row gap-3 flex-col px-2'>
+    <div className='w-full flex pt-20 md:pt-34 justify-evenly md:flex-row gap-3 flex-col px-2 md:px-0'>
         <div className='md:w-2/4 w-full flex items-start flex-col   justify-center'>
         <p className="text-2xl md:text-4xl font-extrabold bg-clip-text text-transparent bg-[linear-gradient(to_right,theme(colors.indigo.400),theme(colors.indigo.100),theme(colors.sky.400),theme(colors.fuchsia.400),theme(colors.sky.400),theme(colors.indigo.100),theme(colors.indigo.400))] bg-[length:200%_auto] animate-gradient py-6">WELCOME TO KIIT KAKSHA</p>
 

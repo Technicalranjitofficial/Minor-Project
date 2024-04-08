@@ -23,7 +23,7 @@ export default function RootLayout({
     <html lang="en">
       <body className="bg-[#111111]">
         <Providers>
-        <div className='w-full bg-gradient-to-r from-[#161616111] to-[#110f0f] text-white min-h-screen h-auto  max-w-screen-2xl mx-auto flex relative flex-col'>
+        <div className='w-full bg-gradient-to-r from-[#161616111] to-[#110f0f] text-white min-h-screen h-auto  max-w-screen-xl mx-auto flex relative flex-col'>
           <Navbar/>
 
         {children}

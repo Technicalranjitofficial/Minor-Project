@@ -152,7 +152,7 @@ export default function MainContent({ infoData, user, branchInfo,semesterDetails
               editLeft={myData.editLeft}
             />
           )}
-          <h1 className="text-center font-bold py-5 text-red-400">Refresh your page to get fresh data <span className="text-cyan-600">({infoData.length} Users have Reuested)</span></h1>
+          <h1 className="text-center font-bold py-5 text-red-400">Refresh your page to get fresh data <span className="text-cyan-600">({infoData.length} Users have Requested)</span></h1>
           <h1 className="py-10 px-10 text-bold">
             {/* Hope You have found found this site helpfu.If you find helpful then please give your feedback here and stay connected we are bringing something cool soon. */}
            After matching with any user you won&apos;t be able to delete your profile.If you still want to unswap or remove your account send a mail to the support team

@@ -248,7 +248,7 @@ export function SwappingControlTable({
       <DeleteConfirm />
       <div className="flex gap-2 flex-col py-4 rounded-md">
         <input
-          placeholder="Filter Subjects..."
+          placeholder="Filter Semester..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)

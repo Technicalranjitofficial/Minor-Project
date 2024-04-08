@@ -51,7 +51,7 @@ function Header() {
                 alt="logo"
               /> */}
               <span className="align-middle text-2xl font-semibold ltr:ml-1.5 rtl:mr-1.5 dark:text-white-light lg:inline">
-                {t("KIIT-CONNECT")}
+                {t("KAKSHA")}
               </span>
             </Link>
     <MenuIcon className="w-6 h-6 cursor-pointer" />

@@ -89,7 +89,7 @@ export default function Navbar() {
       className={`absolute right-5 md:right-10 text-black font-bold cursor-pointer  outline-dotted`}
     />
   </div>
-      <div className="bg-main_body px-3 lg:px-2  w-full flex justify-between items-center  mx-auto max-w-screen-2xl   py-2">
+      <div className="bg-main_body px-3 lg:px-2  w-full flex justify-between items-center  mx-auto max-w-screen-xl   py-2">
         <div
           className={`h-full border overflow-y-auto md:hidden top-0 ${
             menuOpen ? "left-0" : "-left-full"
